@@ -82,12 +82,12 @@ Strutturata con 3 campi distinti: **Comando**, **Attributi**, **Destinazione**.
 
 #### Opzione B — Template Avanzato con Segnaposto
 Fornisce massima flessibilità per comandi complessi o articolati, permettendo l'uso di variabili dinamiche:
-- `{file}`: Percorso completo racchiuso tra virgolette (`"/path/al/file.wav"`).
-- `{name}`: Nome del file senza estensione.
-- `{ext}`: Estensione del file.
-- `{dir}`: Percorso della cartella contenitore.
-- `{date}`: Data di modifica del file.
-- `{dest}`: Percorso di destinazione.
+- `{file}`: Rappresenta il file selezionato corrente su cui viene applicata l'azione/script (inserisce il percorso completo tra virgolette, es. `"/path/al/file.wav"`).
+- `{name}`: Nome del file selezionato corrente senza estensione (es. `"brano"`).
+- `{ext}`: Estensione del file selezionato corrente (es. `"wav"`).
+- `{dir}`: Percorso della cartella contenitore del file selezionato corrente.
+- `{date}`: Data di ultima modifica del file selezionato corrente.
+- `{dest}`: Percorso della cartella di destinazione specificata.
 - *Esempio*: `ffmpeg -i {file} -b:a 192k {dir}/{name}.mp3`
 
 ### Logica di Validazione e Salvataggio

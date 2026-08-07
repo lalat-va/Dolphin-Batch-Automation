@@ -82,12 +82,12 @@ Structured with 3 distinct input fields: **Command**, **Attributes**, **Destinat
 
 #### Option B — Advanced Placeholder Template
 Offers complete flexibility for complex commands using dynamic placeholders:
-- `{file}`: Full quoted file path (`"/path/to/file.wav"`).
-- `{name}`: File name without extension.
-- `{ext}`: File extension.
-- `{dir}`: Parent folder directory path.
-- `{date}`: Last modified date.
-- `{dest}`: Output target destination path.
+- `{file}`: Represents the current selected file on which the action/script will be executed (inserts the full quoted path, e.g., `"/path/to/file.wav"`).
+- `{name}`: Name of the current selected file without extension (e.g., `"audio"`).
+- `{ext}`: Extension of the current selected file (e.g., `"wav"`).
+- `{dir}`: Directory path of the parent folder containing the current selected file.
+- `{date}`: Last modification date of the current selected file.
+- `{dest}`: Output target destination folder path.
 - *Example*: `ffmpeg -i {file} -b:a 192k {dir}/{name}.mp3`
 
 ### Validation & Persistence Logic
