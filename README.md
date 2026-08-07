@@ -1,3 +1,6 @@
+# ATTENZIONE
+Codice totalmente generato con AI; autore non ha competenze per gestire eventuali correzzioni; se siete interessati al progetto NON CONTRIBUITE ma forkate o scaricate.
+
 # Dolphin Batch Automation
 
 **Dolphin Batch Automation** è un componente aggiuntivo nativo per **KDE Dolphin** (realizzato in C++20, Qt6, Kirigami e KDE Frameworks 6) orientato all'automazione ed esecuzione di azioni massive sui file.
