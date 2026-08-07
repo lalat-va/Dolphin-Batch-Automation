@@ -1,0 +1,10 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="/">
+    <file>src/ui/Main.qml</file>
+    <file>src/ui/FileListView.qml</file>
+    <file>src/ui/ActionEditor.qml</file>
+    <file>src/ui/TagDialog.qml</file>
+    <file>src/ui/CustomCommandDialog.qml</file>
+    <file>src/ui/ExecutionDialog.qml</file>
+</qresource>
+</RCC>
