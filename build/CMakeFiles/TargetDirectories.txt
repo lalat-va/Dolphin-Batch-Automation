@@ -1,0 +1,12 @@
+/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/uninstall.dir
+/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/dolphin-batch-automation.dir
+/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/translations.dir
+/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/test.dir
+/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/edit_cache.dir
+/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/rebuild_cache.dir
+/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/list_install_components.dir
+/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/install.dir
+/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/install/local.dir
+/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/install/strip.dir
+/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/dolphin-batch-automation_autogen_timestamp_deps.dir
+/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/dolphin-batch-automation_autogen.dir

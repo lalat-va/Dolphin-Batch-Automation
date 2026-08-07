@@ -1,0 +1,8 @@
+# Hashes of file build rules.
+27aac63c9e7f7047f949eb123a5b1a19 CMakeFiles/dolphin-batch-automation_autogen
+27aac63c9e7f7047f949eb123a5b1a19 CMakeFiles/translations
+7cf38f46e8fcbb01e2d97f240dde0933 CMakeFiles/uninstall
+9b5fef93c61d784c0142f5d5fd3e71e8 dolphin-batch-automation_autogen/EWIEGA46WW/qrc_resources.cpp
+a2504aae97c7a7131491cffa1f6797ab dolphin-batch-automation_autogen/timestamp
+da6ccfc2c4a6b4e27f15e33dc95f4b10 locale/en/LC_MESSAGES/dolphin-batch-automation.mo
+150bf9042ab9cbe95c0ffcd477f1cd9b locale/it/LC_MESSAGES/dolphin-batch-automation.mo

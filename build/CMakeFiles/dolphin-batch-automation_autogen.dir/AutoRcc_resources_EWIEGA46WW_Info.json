@@ -1,0 +1,30 @@
+{
+	"BUILD_DIR" : "/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/dolphin-batch-automation_autogen",
+	"CMAKE_BINARY_DIR" : "/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build",
+	"CMAKE_CURRENT_BINARY_DIR" : "/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation",
+	"CMAKE_SOURCE_DIR" : "/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Unix Makefiles",
+	"INCLUDE_DIR" : "/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/dolphin-batch-automation_autogen/include",
+	"INPUTS" : 
+	[
+		"/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/src/ui/Main.qml",
+		"/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/src/ui/TagDialog.qml",
+		"/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/src/ui/CustomCommandDialog.qml",
+		"/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/src/ui/ExecutionDialog.qml",
+		"/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/src/ui/ActionEditor.qml",
+		"/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/src/ui/FileListView.qml"
+	],
+	"LOCK_FILE" : "/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/dolphin-batch-automation_autogen.dir/AutoRcc_resources_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "-name", "resources" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_resources.cpp",
+	"RCC_EXECUTABLE" : "/usr/lib/qt6/rcc",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/build/CMakeFiles/dolphin-batch-automation_autogen.dir/AutoRcc_resources_EWIEGA46WW_Used.txt",
+	"SOURCE" : "/home/alessiofolli/.gemini/antigravity/scratch/dolphin-batch-automation/resources.qrc",
+	"USE_BETTER_GRAPH" : true,
+	"VERBOSITY" : 0
+}
