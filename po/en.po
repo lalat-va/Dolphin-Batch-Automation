@@ -1,0 +1,58 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: dolphin-batch-automation 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-31 20:12+0200\n"
+"PO-Revision-Date: 2026-07-31 20:12+0200\n"
+"Last-Translator: KDE Community\n"
+"Language-Team: English <en@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Automazione File Massiva Dolphin"
+msgstr "Dolphin Batch File Automation"
+
+msgid "Componente aggiuntivo per KDE Dolphin per l'automazione massiva di azioni sui file."
+msgstr "Add-on component for KDE Dolphin for mass file action automation."
+
+msgid "Cartella o file su cui operare"
+msgstr "Directory or file to operate on"
+
+msgid "Esegui Comandi"
+msgstr "Run Commands"
+
+msgid "Cancella Inseriti"
+msgstr "Clear Actions"
+
+msgid "Salva Log CSV"
+msgstr "Save CSV Log"
+
+msgid "Esci"
+msgstr "Exit"
+
+msgid "Elenco File & Organizzazione Gruppi"
+msgstr "File List & Group Organization"
+
+msgid "Includi sottocartelle (Ricorsivo)"
+msgstr "Include subfolders (Recursive)"
+
+msgid "Organizza per:"
+msgstr "Organize by:"
+
+msgid "Crea Gruppo Personalizzato"
+msgstr "Create Custom Group"
+
+msgid "Copia"
+msgstr "Copy"
+
+msgid "Sposta"
+msgstr "Move"
+
+msgid "Cancella"
+msgstr "Trash"
+
+msgid "Tagga"
+msgstr "Tag"

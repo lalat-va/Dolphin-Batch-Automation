@@ -1,0 +1,198 @@
+import QtQuick 2.15
+import QtQuick.Controls 2.15 as Controls
+import QtQuick.Layouts 1.15
+import org.kde.kirigami 2.20 as Kirigami
+
+Controls.Dialog {
+    id: tagDialog
+    title: "Gestione Tag Plasma 6 / Baloo"
+    modal: true
+    standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
+    anchors.centerIn: parent
+    width: 600
+    height: 520
+
+    property string targetFilePath: ""
+    property var selectedTags: []
+    property var extractedMetaMap: ({})
+
+    function openForTarget(filePath) {
+        targetFilePath = filePath
+        selectedTags = []
+        tagDialog.open()
+    }
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 12
+
+        Controls.Label {
+            text: "Tag Esistenti (Seleziona uno o più tag da applicare):"
+            font.bold: true
+        }
+
+        // Lista tag disponibili
+        Controls.ScrollView {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            clip: true
+
+            ListView {
+                id: tagListView
+                model: tagManager.availableTags()
+                spacing: 4
+
+                delegate: RowLayout {
+                    width: tagListView.width
+                    spacing: 10
+
+                    Controls.CheckBox {
+                        text: modelData
+                        onCheckedChanged: {
+                            if (checked) {
+                                if (tagDialog.selectedTags.indexOf(modelData) === -1)
+                                    tagDialog.selectedTags.push(modelData)
+                            } else {
+                                var idx = tagDialog.selectedTags.indexOf(modelData)
+                                if (idx !== -1) tagDialog.selectedTags.splice(idx, 1)
+                            }
+                        }
+                    }
+
+                    Item { Layout.fillWidth: true }
+
+                    Controls.Button {
+                        icon.name: "edit-delete"
+                        text: "Elimina"
+                        onClicked: tagManager.deleteTag(modelData)
+                    }
+                }
+            }
+        }
+
+        Kirigami.Separator { Layout.fillWidth: true }
+
+        // Sezione creazione nuovo tag ed innesto
+        ColumnLayout {
+            Layout.fillWidth: true
+            spacing: 8
+
+            Controls.Label {
+                text: "Crea Nuovo Tag:"
+                font.bold: true
+            }
+
+            RowLayout {
+                spacing: 8
+                Layout.fillWidth: true
+
+                Controls.TextField {
+                    id: newTagInput
+                    placeholderText: "Es: rock"
+                    Layout.fillWidth: true
+                }
+
+                Controls.Label {
+                    text: "Innesta in:"
+                }
+
+                Controls.ComboBox {
+                    id: parentTagCombo
+                    model: ["<Nessun Padre>"].concat(tagManager.availableTags())
+                }
+
+                Controls.Button {
+                    text: "Crea Tag"
+                    icon.name: "tag-new"
+                    onClicked: {
+                        var parentTag = parentTagCombo.currentIndex > 0 ? parentTagCombo.currentText : ""
+                        if (tagManager.createTag(newTagInput.text, parentTag)) {
+                            newTagInput.text = ""
+                        }
+                    }
+                }
+            }
+        }
+
+        Kirigami.Separator { Layout.fillWidth: true }
+
+        // Sezione Estrazione Metadati
+        RowLayout {
+            Layout.fillWidth: true
+
+            Controls.Button {
+                text: "🔍 Estrai metadati dal file..."
+                icon.name: "edit-find"
+                enabled: targetFilePath !== ""
+                onClicked: {
+                    extractedMetaMap = tagManager.extractMetadata(targetFilePath)
+                    metadataSubDialog.open()
+                }
+            }
+        }
+    }
+
+    onAccepted: {
+        if (selectedTags.length > 0) {
+            var tagStr = selectedTags.join(",")
+            root.applyActionToActiveTarget("Tagga (" + tagStr + ")")
+        }
+    }
+
+    // Sotto-finestra per la selezione dei metadati estratti da convertire in tag
+    Controls.Dialog {
+        id: metadataSubDialog
+        title: "Metadati Estratti per Tagging"
+        modal: true
+        standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
+        anchors.centerIn: parent
+        width: 450
+        height: 350
+
+        property var selectedMetaKeys: []
+
+        ColumnLayout {
+            anchors.fill: parent
+            spacing: 10
+
+            Controls.Label {
+                text: "Seleziona gli elementi di metadato da convertire in tag:"
+                font.bold: true
+            }
+
+            Controls.ScrollView {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                ColumnLayout {
+                    spacing: 6
+                    Repeater {
+                        model: Object.keys(tagDialog.extractedMetaMap)
+                        delegate: Controls.CheckBox {
+                            text: modelData + ": " + tagDialog.extractedMetaMap[modelData]
+                            onCheckedChanged: {
+                                var val = tagDialog.extractedMetaMap[modelData].toString()
+                                if (checked) {
+                                    metadataSubDialog.selectedMetaKeys.push(val)
+                                } else {
+                                    var i = metadataSubDialog.selectedMetaKeys.indexOf(val)
+                                    if (i !== -1) metadataSubDialog.selectedMetaKeys.splice(i, 1)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        onAccepted: {
+            for (var k = 0; k < selectedMetaKeys.length; ++k) {
+                var newMetaTag = selectedMetaKeys[k]
+                tagManager.createTag(newMetaTag, "")
+                if (tagDialog.selectedTags.indexOf(newMetaTag) === -1) {
+                    tagDialog.selectedTags.push(newMetaTag)
+                }
+            }
+        }
+    }
+}

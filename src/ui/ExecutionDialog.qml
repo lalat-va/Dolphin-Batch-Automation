@@ -1,0 +1,178 @@
+import QtQuick 2.15
+import QtQuick.Controls 2.15 as Controls
+import QtQuick.Layouts 1.15
+import QtQuick.Dialogs as QtDialogs
+import org.kde.kirigami 2.20 as Kirigami
+
+Controls.Dialog {
+    id: executionDialog
+    title: "Esecuzione Comandi Batch"
+    modal: true
+    standardButtons: Controls.Dialog.Close
+    anchors.centerIn: parent
+    width: 700
+    height: 550
+
+    property ListModel logListModel: ListModel {}
+
+    function openExecutionConfirmation() {
+        confirmWarningDialog.open()
+    }
+
+    function openLogExport() {
+        exportCsvFileDialog.open()
+    }
+
+    Connections {
+        target: executionEngine
+        function onTaskFinished(filePath, actionName, success, message) {
+            logListModel.append({
+                "filePath": filePath,
+                "actionName": actionName,
+                "status": success ? "SUCCESS" : "ERROR",
+                "message": message
+            })
+        }
+    }
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 12
+
+        Kirigami.InlineMessage {
+            id: warningMsg
+            Layout.fillWidth: true
+            type: Kirigami.InlineMessage.Warning
+            visible: executionEngine.isRunning
+            text: "Esecuzione in corso... Non chiudere l'applicazione fino al termine."
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            spacing: 10
+
+            Controls.ProgressBar {
+                id: pBar
+                Layout.fillWidth: true
+                value: executionEngine.progressFraction
+            }
+
+            Controls.Label {
+                text: executionEngine.completedTasks + " / " + executionEngine.totalTasks
+                font.bold: true
+            }
+        }
+
+        Controls.Label {
+            text: "Registro Esecuzione (Log in tempo reale):"
+            font.bold: true
+        }
+
+        Controls.ScrollView {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            clip: true
+
+            ListView {
+                id: logView
+                model: logListModel
+                spacing: 4
+
+                delegate: Rectangle {
+                    width: logView.width
+                    height: logRow.implicitHeight + 8
+                    color: status === "SUCCESS" ? "#1b4d2e" : "#5c1d1d"
+                    radius: 3
+
+                    RowLayout {
+                        id: logRow
+                        anchors.fill: parent
+                        anchors.margins: 6
+                        spacing: 10
+
+                        Controls.Label {
+                            text: status === "SUCCESS" ? "✓" : "✗"
+                            font.bold: true
+                            color: status === "SUCCESS" ? "#2ecc71" : "#e74c3c"
+                        }
+
+                        Controls.Label {
+                            text: actionName
+                            font.bold: true
+                            Layout.preferredWidth: 120
+                        }
+
+                        Controls.Label {
+                            text: filePath
+                            elide: Text.ElideMiddle
+                            Layout.fillWidth: true
+                        }
+
+                        Controls.Label {
+                            text: message
+                            font.pixelSize: 11
+                            color: "#bdc3c7"
+                        }
+                    }
+                }
+            }
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+
+            Controls.Button {
+                text: "Annulla Esecuzione"
+                icon.name: "process-stop"
+                enabled: executionEngine.isRunning
+                onClicked: executionEngine.cancelExecution()
+            }
+
+            Item { Layout.fillWidth: true }
+
+            Controls.Button {
+                text: "Esporta Log CSV"
+                icon.name: "document-save-as"
+                enabled: logListModel.count > 0
+                onClicked: exportCsvFileDialog.open()
+            }
+        }
+    }
+
+    // Dialogo Avviso di Sicurezza
+    Controls.Dialog {
+        id: confirmWarningDialog
+        title: "Conferma Esecuzione Massiva"
+        modal: true
+        standardButtons: Controls.Dialog.Yes | Controls.Dialog.No
+        anchors.centerIn: parent
+        width: 480
+
+        ColumnLayout {
+            spacing: 10
+            Kirigami.InlineMessage {
+                Layout.fillWidth: true
+                type: Kirigami.InlineMessage.Warning
+                visible: true
+                text: "ATTENZIONE:\nI comandi inseriti saranno eseguiti nell'ordine in cui sono stati organizzati; assicurarsi che l'ordine dei comandi per ogni operazione sia quello corretto."
+            }
+        }
+
+        onAccepted: {
+            executionDialog.logListModel.clear()
+            executionDialog.open()
+            executionEngine.startExecution(fileModel.files(), customCommandManager.allCommands())
+        }
+    }
+
+    // Qt File Dialog per salvataggio CSV
+    QtDialogs.FileDialog {
+        id: exportCsvFileDialog
+        title: "Salva Registro Log CSV"
+        fileMode: QtDialogs.FileDialog.SaveFile
+        nameFilters: ["File CSV (*.csv)"]
+        onAccepted: {
+            executionEngine.exportLogToCsv(selectedFile.toString())
+        }
+    }
+}

@@ -1,0 +1,225 @@
+import QtQuick 2.15
+import QtQuick.Controls 2.15 as Controls
+import QtQuick.Layouts 1.15
+import org.kde.kirigami 2.20 as Kirigami
+
+Controls.Dialog {
+    id: customCmdDialog
+    title: "Comando Personalizzato"
+    modal: true
+    standardButtons: Controls.Dialog.Close
+    anchors.centerIn: parent
+    width: 650
+    height: 580
+
+    property bool isEditingModified: false
+
+    function openDialog() {
+        isEditingModified = false
+        errorInlineMsg.visible = false
+        customCmdDialog.open()
+    }
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 12
+
+        Controls.TabBar {
+            id: tabBar
+            Layout.fillWidth: true
+            Controls.TabButton { text: "Scegli da Esistente" }
+            Controls.TabButton { text: "Crea Nuovo Comando" }
+        }
+
+        Kirigami.InlineMessage {
+            id: errorInlineMsg
+            Layout.fillWidth: true
+            type: Kirigami.InlineMessage.Error
+            visible: false
+        }
+
+        StackLayout {
+            id: stackLayout
+            currentIndex: tabBar.currentIndex
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            // MODALITÀ 1: Seleziona da Esistente
+            ColumnLayout {
+                spacing: 10
+
+                RowLayout {
+                    spacing: 10
+                    Layout.fillWidth: true
+                    Controls.Label { text: "Comando Esistente:"; font.bold: true }
+                    Controls.ComboBox {
+                        id: existingCmdCombo
+                        Layout.fillWidth: true
+                        model: customCommandManager.savedCommandNames()
+                        onActivated: {
+                            var details = customCommandManager.getCommandDetails(currentText)
+                            existingTitleField.text = details.name || ""
+                            existingCmdField.text = details.command || ""
+                            isEditingModified = false
+                            errorInlineMsg.visible = false
+                        }
+                    }
+                }
+
+                Kirigami.FormLayout {
+                    Layout.fillWidth: true
+
+                    Controls.TextField {
+                        id: existingTitleField
+                        Kirigami.FormData.label: "Nome del comando:"
+                        Layout.fillWidth: true
+                        onTextChanged: isEditingModified = true
+                    }
+
+                    Controls.TextField {
+                        id: existingCmdField
+                        Kirigami.FormData.label: "Comando (Sintassi Shell):"
+                        Layout.fillWidth: true
+                        onTextChanged: isEditingModified = true
+                    }
+                }
+
+                Controls.CheckBox {
+                    id: createAsNewCheck1
+                    text: "Crea nuovo comando da modifiche"
+                    visible: isEditingModified
+                    checked: true
+                }
+
+                Item { Layout.fillHeight: true }
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    Item { Layout.fillWidth: true }
+                    Controls.Button {
+                        text: "Applica"
+                        icon.name: "dialog-ok-apply"
+                        onClicked: {
+                            var title = existingTitleField.text.trim()
+                            var cmd = existingCmdField.text.trim()
+
+                            if (createAsNewCheck1.visible && createAsNewCheck1.checked) {
+                                if (!customCommandManager.saveCustomCommand(title, cmd, true)) {
+                                    errorInlineMsg.text = "Errore: Un comando con il nome '" + title + "' esiste già!"
+                                    errorInlineMsg.visible = true
+                                    return
+                                }
+                            }
+                            root.applyActionToActiveTarget(title)
+                            customCmdDialog.close()
+                        }
+                    }
+                }
+            }
+
+            // MODALITÀ 2: Crea Nuovo Comando (con Opzione A / Opzione B)
+            ColumnLayout {
+                spacing: 10
+
+                Controls.TextField {
+                    id: newTitleField
+                    placeholderText: "Titolo del Comando (es. Converti in MP3)"
+                    Layout.fillWidth: true
+                }
+
+                Controls.TabBar {
+                    id: modeTabBar
+                    Layout.fillWidth: true
+                    Controls.TabButton { text: "Opzione A (Semplice)" }
+                    Controls.TabButton { text: "Opzione B (Avanzata con Segnaposto)" }
+                }
+
+                StackLayout {
+                    id: modeStack
+                    currentIndex: modeTabBar.currentIndex
+                    Layout.fillWidth: true
+
+                    // Opzione A: Comando, Attributi, Destinazione
+                    ColumnLayout {
+                        spacing: 8
+                        Controls.TextField {
+                            id: optACmd
+                            placeholderText: "Comando (es: ffmpeg -i)"
+                            Layout.fillWidth: true
+                        }
+                        Controls.TextField {
+                            id: optAAttrs
+                            placeholderText: "Attributi (es: -b:a 192k)"
+                            Layout.fillWidth: true
+                        }
+                        Controls.TextField {
+                            id: optADest
+                            placeholderText: "Destinazione (es: brano.mp3)"
+                            Layout.fillWidth: true
+                        }
+                    }
+
+                    // Opzione B: Segnaposto componibili
+                    ColumnLayout {
+                        spacing: 8
+                        Controls.TextField {
+                            id: optBCmd
+                            placeholderText: "Template: ffmpeg -i {file} -b:a 192k {dir}/{name}.mp3"
+                            Layout.fillWidth: true
+                        }
+                        Controls.Label {
+                            text: "Variabili disponibili: {file}, {name}, {ext}, {dir}, {date}, {dest}"
+                            font.pixelSize: 11
+                            color: Kirigami.Theme.disabledTextColor
+                        }
+                    }
+                }
+
+                Kirigami.FormLayout {
+                    Layout.fillWidth: true
+                    Controls.TextField {
+                        Kirigami.FormData.label: "Anteprima Comando Shell:"
+                        readOnly: true
+                        Layout.fillWidth: true
+                        text: modeTabBar.currentIndex === 0 ?
+                              customCommandManager.composeOptionA(optACmd.text, optAAttrs.text, optADest.text) :
+                              customCommandManager.composeOptionB(optBCmd.text)
+                    }
+                }
+
+                Controls.CheckBox {
+                    id: createAsNewCheck2
+                    text: "Salva come nuovo comando personalizzato"
+                    checked: true
+                }
+
+                Item { Layout.fillHeight: true }
+
+                RowLayout {
+                    Layout.fillWidth: true
+                    Item { Layout.fillWidth: true }
+                    Controls.Button {
+                        text: "Applica e Salva"
+                        icon.name: "dialog-ok-apply"
+                        onClicked: {
+                            var title = newTitleField.text.trim()
+                            var shellCmd = modeTabBar.currentIndex === 0 ?
+                                           customCommandManager.composeOptionA(optACmd.text, optAAttrs.text, optADest.text) :
+                                           customCommandManager.composeOptionB(optBCmd.text)
+
+                            if (createAsNewCheck2.checked) {
+                                if (!customCommandManager.saveCustomCommand(title, shellCmd, true)) {
+                                    errorInlineMsg.text = "Errore: Un comando con il nome '" + title + "' esiste già!"
+                                    errorInlineMsg.visible = true
+                                    return
+                                }
+                            }
+                            root.applyActionToActiveTarget(title)
+                            customCmdDialog.close()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

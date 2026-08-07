@@ -1,0 +1,234 @@
+import QtQuick 2.15
+import QtQuick.Controls 2.15 as Controls
+import QtQuick.Layouts 1.15
+import org.kde.kirigami 2.20 as Kirigami
+
+Kirigami.ScrollablePage {
+    id: page
+    title: "Automazione File Massiva (" + controller.currentDirectory + ")"
+
+    actions: [
+        Kirigami.Action {
+            text: "Esegui Comandi"
+            icon.name: "media-playback-start"
+            onTriggered: executionDialog.openExecutionConfirmation()
+        },
+        Kirigami.Action {
+            text: "Cancella Inseriti"
+            icon.name: "edit-clear-all"
+            onTriggered: controller.clearAllActions()
+        },
+        Kirigami.Action {
+            text: "Salva Log CSV"
+            icon.name: "document-save"
+            onTriggered: executionDialog.openLogExport()
+        },
+        Kirigami.Action {
+            text: "Esci"
+            icon.name: "application-exit"
+            onTriggered: root.close()
+        }
+    ]
+
+    header: Rectangle {
+        color: Kirigami.Theme.alternateBackgroundColor
+        implicitHeight: headerLayout.implicitHeight + 20
+
+        ColumnLayout {
+            id: headerLayout
+            anchors.fill: parent
+            anchors.margins: 10
+            spacing: 8
+
+            RowLayout {
+                spacing: 15
+                Layout.fillWidth: true
+
+                Controls.CheckBox {
+                    id: recursiveCheck
+                    text: "Includi sottocartelle (Ricorsivo)"
+                    checked: controller.isRecursive
+                    onCheckedChanged: controller.isRecursive = checked
+                }
+
+                Controls.Label {
+                    text: "Organizza per:"
+                    font.bold: true
+                }
+
+                Controls.ComboBox {
+                    id: ruleCombo
+                    model: [
+                        { text: "MIME type", value: "mime" },
+                        { text: "Cartella / Sottocartella", value: "folder" },
+                        { text: "Data di Modifica", value: "date" }
+                    ]
+                    textRole: "text"
+                    onActivated: controller.setGroupRule(model[currentIndex].value)
+                }
+
+                Item { Layout.fillWidth: true }
+
+                Controls.Button {
+                    text: "Crea Gruppo Personalizzato"
+                    icon.name: "group-new"
+                    enabled: fileModel && fileModel.selectedFilePaths ? fileModel.selectedFilePaths().length > 0 : false
+                    onClicked: createCustomGroupDialog.open()
+                }
+            }
+
+            Kirigami.InlineMessage {
+                Layout.fillWidth: true
+                type: Kirigami.InlineMessage.Information
+                visible: true
+                text: "L'ordine delle azioni concatenate con 'AND' determina l'ordine di esecuzione esatto su ciascun file. La stringa è modificabile direttamente."
+            }
+        }
+    }
+
+    ColumnLayout {
+        spacing: 15
+        width: parent.width
+
+        // Sezione Gruppi
+        Kirigami.FormLayout {
+            Layout.fillWidth: true
+            visible: controller && controller.groups ? controller.groups.length > 0 : false
+
+            Repeater {
+                model: controller.groups
+                delegate: RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 10
+
+                    Controls.Label {
+                        text: modelData.groupName + " (" + modelData.fileCount + " file)"
+                        font.bold: true
+                        Layout.preferredWidth: 220
+                    }
+
+                    Controls.Button {
+                        text: "+ Aggiungi azione al gruppo"
+                        icon.name: "list-add"
+                        onClicked: root.openActionMenuForGroup(index)
+                    }
+
+                    Controls.TextField {
+                        id: groupPipelineField
+                        Layout.fillWidth: true
+                        text: modelData.actionsPipeline
+                        placeholderText: "Es: Copia (/dest) AND Tagga (MUSICA)"
+                        onEditingFinished: modelData.actionsPipeline = text
+                    }
+
+                    Controls.Button {
+                        text: "Applica ai file"
+                        icon.name: "dialog-ok-apply"
+                        onClicked: controller.applyGroupPipelineToFiles(index, groupPipelineField.text)
+                    }
+                }
+            }
+        }
+
+        Kirigami.Separator { Layout.fillWidth: true }
+
+        // Sezione Elenco File Singoli
+        ListView {
+            id: listView
+            Layout.fillWidth: true
+            implicitHeight: contentHeight
+            model: fileModel
+            spacing: 6
+
+            delegate: Rectangle {
+                width: listView.width
+                height: itemRow.implicitHeight + 16
+                color: model.isSelected ? Kirigami.Theme.highlightColor : (index % 2 === 0 ? Kirigami.Theme.backgroundColor : Kirigami.Theme.alternateBackgroundColor)
+                radius: 4
+
+                RowLayout {
+                    id: itemRow
+                    anchors.fill: parent
+                    anchors.margins: 8
+                    spacing: 10
+
+                    Controls.CheckBox {
+                        checked: model.isSelected
+                        onCheckedChanged: fileModel.setSelectedAt(index, checked)
+                    }
+
+                    Kirigami.Icon {
+                        source: model.isDir ? "folder" : "application-x-zerosize"
+                        implicitWidth: 22
+                        implicitHeight: 22
+                    }
+
+                    ColumnLayout {
+                        spacing: 2
+                        Layout.preferredWidth: 240
+
+                        Controls.Label {
+                            text: model.fileName
+                            font.bold: true
+                            elide: Text.ElideRight
+                        }
+
+                        Controls.Label {
+                            text: model.filePath
+                            font.pixelSize: 11
+                            color: Kirigami.Theme.disabledTextColor
+                            elide: Text.ElideMiddle
+                        }
+                    }
+
+                    Controls.Button {
+                        text: "+"
+                        Controls.ToolTip.visible: hovered
+                        Controls.ToolTip.text: "Aggiungi azione al file"
+                        onClicked: root.openActionMenuForFile(index, model.filePath)
+                    }
+
+                    Controls.Label {
+                        text: "Aggiungi azioni:"
+                        font.pixelSize: 11
+                    }
+
+                    Controls.TextField {
+                        id: pipelineInput
+                        Layout.fillWidth: true
+                        text: model.actionsPipeline
+                        placeholderText: "es. Copia (/dest) AND Tagga (MUSICA/rock) AND Cancella"
+                        onEditingFinished: fileModel.setPipelineAt(index, text)
+                    }
+                }
+            }
+        }
+    }
+
+    // Dialogo creazione gruppo personalizzato
+    Controls.Dialog {
+        id: createCustomGroupDialog
+        title: "Nuovo Gruppo Personalizzato"
+        standardButtons: Controls.Dialog.Ok | Controls.Dialog.Cancel
+        modal: true
+        anchors.centerIn: parent
+
+        ColumnLayout {
+            spacing: 10
+            Controls.Label {
+                text: "Inserisci il nome per il gruppo personalizzato:"
+            }
+            Controls.TextField {
+                id: customGroupNameInput
+                placeholderText: "Es: Progetto Selezionato"
+                Layout.fillWidth: true
+            }
+        }
+
+        onAccepted: {
+            if (controller.createCustomGroup(customGroupNameInput.text)) {
+                customGroupNameInput.text = ""
+            }
+        }
+    }
+}

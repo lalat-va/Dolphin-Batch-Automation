@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=KonqPopupMenu/Plugin
+MimeType=all/allfiles;inode/directory;
+Actions=BatchAutomate;
+X-KDE-Priority=TopLevel
+X-KDE-Submenu=Automazione
+X-KDE-Submenu[en]=Automation
+
+[Desktop Action BatchAutomate]
+Name=Automazione File Massiva...
+Name[it]=Automazione File Massiva...
+Name[en]=Massive Batch Automation...
+Icon=system-run
+Exec=dolphin-batch-automation %f
