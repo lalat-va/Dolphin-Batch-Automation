@@ -1,93 +1,60 @@
-# ATTENZIONE
-Codice totalmente generato con AI; autore non ha competenze per gestire eventuali correzzioni; se siete interessati al progetto NON CONTRIBUITE ma forkate o scaricate.
-
 # Dolphin Batch Automation
 
-**Dolphin Batch Automation** è un componente aggiuntivo nativo per **KDE Dolphin** (realizzato in C++20, Qt6, Kirigami e KDE Frameworks 6) orientato all'automazione ed esecuzione di azioni massive sui file.
+[**Italiano**](#italiano) | [**English**](#english)
 
 ---
 
-## 🚀 Caratteristiche Principali
+<a name="italiano"></a>
+## 🇮🇹 Italiano
 
-- **Visualizzazione & Scansione Ricorsiva**: Mostra l'elenco dei file e delle sottocartelle della cartella corrente con opzione di scansione ricorsiva.
-- **Organizzazione & Gruppi**:
-  - Raggruppamento automatico per **MIME Type**, **Cartella/Sottocartella** e **Data di modifica**.
-  - **Gruppi Personalizzati**: Selezione manuale dei file per la creazione di gruppi dedicati (con esclusione automatica dai gruppi standard).
-- **Sequenza Ordinata di Azioni (`AND`)**:
-  - Aggiunta guidata di azioni sui singoli file o sui gruppi via pulsante `+`.
-  - Sintassi editabile in formato `azione 1 AND azione 2 AND azione 3`. L'ordine determina la sequenza esatta di esecuzione.
-- **Gestione Tag Nativi Plasma 6 (Baloo / XDG Extended Attributes)**:
-  - Supporto a tag singoli e annidati (`MUSICA/autore`).
-  - Creazione con opzione **"Innesta in"** per definire tag padri.
-  - Estrazione metadati da file audio/documenti (`KFileMetaData`) e conversione in tag.
-- **Comandi Personalizzati Salvati**:
-  - **Opzione A (Semplice)**: `<Comando> <Attributi> <FILE> <Destinazione>`.
-  - **Opzione B (Avanzata)**: Segnaposto dinamici (`{file}`, `{name}`, `{ext}`, `{dir}`, `{date}`, `{dest}`).
-  - Persistenza automatica tra le sessioni in `~/.config/dolphin-batch-automation/custom_commands.json`.
-- **Multilingua Nativi (i18n)**:
-  - Supporto automatico per **Italiano** e **Inglese**, attivati dinamicamente in base alla lingua del sistema (`gettext` / `ki18n`).
-- **Motore di Esecuzione & Logging CSV**:
-  - Esecuzione asincrona file-per-file con tolleranza agli errori.
-  - Avviso di sicurezza con conferma prima dell'avvio.
-  - Esportazione dei log di esecuzione in formato CSV (`Timestamp`, `FilePath`, `ActionName`, `ExecutedShellCommand`, `Status`, `ErrorMessage`).
+**Dolphin Batch Automation** è un componente aggiuntivo nativo per KDE Dolphin (realizzato in C++20, Qt6, Kirigami e KDE Frameworks 6) progettato per organizzare ed eseguire azioni massicce e in sequenza (`AND`) sui file.
 
----
+### 📌 Nota Importante del Creatore
+> ⚠️ **Progetto Generato al 100% tramite Intelligenza Artificiale (AI)**  
+> Questo progetto è stato interamente concepito, progettato e realizzato mediante l'uso di modelli di Intelligenza Artificiale. L'autore **non possiede le competenze tecniche** per effettuare manutenzione, risolvere bug, gestire segnalazioni (issues) o sviluppare nuove funzionalità.  
+> **Se sei interessato a migliorare, estendere o mantenere questo progetto, sei caldamente invitato a fare un fork del repository.**
 
-## 📋 Dipendenze di Sistema
+### 🛠️ Funzionalità Principali
+- Scansione ricorsiva delle cartelle e raggruppamento per MIME Type, Cartella o Data.
+- Gruppi personalizzati trascinabili/selezionabili a mano.
+- Catena ordinata di azioni per file/gruppo (es: `Copia (/dest) AND Tagga (MUSICA/rock) AND converti_mp3`).
+- Gestione Tag nativi Plasma 6 / Baloo (tag annidati ed estrazione metadati).
+- Editor di comandi personalizzati salvati (modalità semplice ed avanzata).
+- Motore di esecuzione asincrono tollerante agli errori con report di log CSV.
 
-### Dipendenze di Compilazione (Build Dependencies)
-- **CMake** >= 3.20
-- **Extra CMake Modules (ECM)** >= 6.0
-- **Gettext** (`msgfmt`)
-- **Compilatore C++20** (GCC >= 11 o Clang >= 13)
-- **Qt 6** (Core, Gui, Qml, Quick, QuickControls2, Widgets)
-- **KDE Frameworks 6 (KF6)**:
-  - `Kirigami`
-  - `KIO`
-  - `KConfig`
-  - `KCoreAddons`
-  - `KFileMetaData`
-  - `KI18n`
-
-### Dipendenze Forti di Esecuzione (Runtime Dependencies)
-- **`trash-cli`** *(Dipendenza Forte)*: Necessario per l'esecuzione del comando da riga di comando dell'azione **Cancella** (`trash-put`). In assenza di `trash-cli`, l'azione di invio al cestino restituirà errore nel log.
-- **`attr` / `setfattr` / `getfattr`**: Utilizzati per la lettura e scrittura degli attributi estesi XDG dei tag (`user.xdg.tags`).
-
----
-
-## ⚡ Installazione Automatica via Script (`install.sh`)
-
-È fornito uno script `install.sh` per automatizzare l'intero processo di verifica dipendenze, compilazione, traduzioni e posizionamento dei binari e del file `.desktop`.
-
+### ⚡ Installazione Rapida
 ```bash
-# Installazione Utente Locale (~/.local/bin e ~/.local/share/kio/servicemenus)
 ./install.sh
-
-# Oppure installazione di sistema (richiede sudo)
-./install.sh --system
 ```
 
 ---
 
-## 🛠️ Istruzioni Manuali di Build
+<a name="english"></a>
+## 🇬🇧 English
 
-1. **Configurare ed eseguire la build con CMake**:
-   ```bash
-   cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
-   cmake --build build -j$(nproc)
-   ```
+**Dolphin Batch Automation** is a native KDE Dolphin add-on (built with C++20, Qt6, Kirigami, and KDE Frameworks 6) designed to organize and execute batch file actions in sequential pipelines (`AND`).
 
-2. **Installare l'eseguibile, le traduzioni ed il Service Menu di Dolphin**:
-   ```bash
-   sudo cmake --install build
-   ```
+### 📌 Important Creator Note
+> ⚠️ **100% AI-Generated Project**  
+> This project was fully conceived, designed, and implemented using Artificial Intelligence models. The creator **does not possess the technical skills** to maintain the code, fix bugs, handle issue requests, or implement future features.  
+> **If you are interested in improving, extending, or maintaining this project, you are welcome to fork the repository.**
+
+### 🛠️ Key Features
+- Recursive folder scanning & grouping by MIME Type, Folder, or Modification Date.
+- Manual custom grouping with file exclusion from default rules.
+- Ordered file action pipelines (e.g., `Copy (/dest) AND Tag (MUSIC/rock) AND convert_mp3`).
+- Native Plasma 6 / Baloo tagging (nested tags & metadata extraction).
+- Saved custom command manager (simple and advanced placeholder modes).
+- Asynchronous error-tolerant execution engine with CSV log exporting.
+
+### ⚡ Quick Installation
+```bash
+./install.sh
+```
 
 ---
 
-## 🐬 Integrazione in KDE Dolphin
+## 📖 Detailed Documentation / Documentazione Dettagliata
 
-Dopo l'esecuzione di `install.sh` (o installazione manuale):
-1. Apri **Dolphin**.
-2. Fai clic con il tasto destro del mouse su qualsiasi cartella o selezione di file.
-3. Nel menu contestuale, seleziona la voce **"Automazione File Massiva..."** / **"Massive Batch Automation..."**.
-4. Verrà aperta la finestra nativa Kirigami di **Dolphin Batch Automation** impostata direttamente sulla cartella selezionata.
+- 🇮🇹 [**Documentazione Dettagliata in Italiano (DOCUMENTAZIONE_IT.md)**](DOCUMENTAZIONE_IT.md)
+- 🇬🇧 [**Detailed Technical Documentation in English (DOCUMENTATION_EN.md)**](DOCUMENTATION_EN.md)
