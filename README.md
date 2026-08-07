@@ -1,3 +1,6 @@
+<img width="1198" height="889" alt="Dolphin-batch-automation" src="https://github.com/user-attachments/assets/781a0b6a-b091-4ee0-83a3-27e0d655be9a" />
+
+
 # Dolphin Batch Automation
 
 [**Italiano**](#italiano) | [**English**](#english)
